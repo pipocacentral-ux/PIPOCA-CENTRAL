@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Página não encontrada | PipocaCentral</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">🍿</span> PipocaCentral</a>
+    <div class="header-actions" style="margin-left:auto">
+      <a href="index.html" class="btn btn-secondary btn-sm">Voltar ao início</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="container coming-soon">
+    <div class="icon-badge"><span class="icon" data-icon="search"></span></div>
+    <h1 style="font-size:var(--fs-xl)">Não encontramos essa página</h1>
+    <p>O link pode estar errado ou o conteúdo pode ter mudado de endereço. Que tal buscar o que você procurava?</p>
+
+    <form class="search-bar" action="busca.html" role="search" style="margin-top:var(--space-6); margin-inline:auto">
+      <span class="icon" data-icon="search" style="color:var(--text-secondary)"></span>
+      <input type="search" name="q" placeholder="Busque por um filme, série ou ator...">
+      <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    <div style="margin-top:var(--space-7); text-align:left">
+      <h3 style="font-size:var(--fs-sm); color:var(--text-secondary); margin-bottom:var(--space-3)">Ou explore:</h3>
+      <div style="display:flex; gap:var(--space-2); flex-wrap:wrap; justify-content:center">
+        <a href="busca.html?tipo=filme" class="filter-tab">Filmes</a>
+        <a href="busca.html?tipo=serie" class="filter-tab">Séries</a>
+        <a href="rankings.html" class="filter-tab">Rankings</a>
+        <a href="noticias.html" class="filter-tab">Notícias</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="margin-top:0; border-top:none; padding-top:0">
+      <span>© <span data-year></span> PipocaCentral. Todos os direitos reservados.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/mock-data.js"></script>
+<script src="js/main.js" defer></script>
+</body>
+</html>

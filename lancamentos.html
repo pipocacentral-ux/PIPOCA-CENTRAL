@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lançamentos de filmes e séries | PipocaCentral</title>
+<meta name="description" content="Os lançamentos mais recentes de filmes e séries no PipocaCentral.">
+<link rel="canonical" href="https://[SEU-DOMINIO]/lancamentos">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">🍿</span> PipocaCentral</a>
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="index.html" class="nav-link">Início</a>
+      <a href="busca.html?tipo=filme" class="nav-link">Filmes</a>
+      <a href="busca.html?tipo=serie" class="nav-link">Séries</a>
+      <a href="busca.html?tipo=pessoa" class="nav-link">Elenco</a>
+      <a href="listas.html" class="nav-link">Listas</a>
+      <a href="analises.html" class="nav-link">Análises</a>
+      <a href="noticias.html" class="nav-link">Notícias</a>
+      <a href="lancamentos.html" class="nav-link">Lançamentos</a>
+      <a href="rankings.html" class="nav-link">Rankings</a>
+    </nav>
+    <div class="header-actions">
+      <a href="busca.html" class="icon-btn" aria-label="Buscar"><span class="icon" data-icon="search"></span></a>
+      <button class="btn btn-secondary btn-sm" data-requires-auth>Entrar</button>
+      <button class="icon-btn nav-toggle" aria-label="Abrir menu"><span class="icon" data-icon="menu"></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-drawer">
+  <div class="mobile-drawer-scrim"></div>
+  <div class="mobile-drawer-panel">
+    <div class="mobile-drawer-header">
+      <span class="logo"><span class="logo-mark">🍿</span> PipocaCentral</span>
+      <button class="icon-btn drawer-close" aria-label="Fechar menu"><span class="icon" data-icon="close"></span></button>
+    </div>
+    <a href="index.html" class="mobile-drawer-link"><span class="icon" data-icon="home"></span> Início</a>
+    <a href="busca.html?tipo=filme" class="mobile-drawer-link"><span class="icon" data-icon="film"></span> Filmes</a>
+    <a href="busca.html?tipo=serie" class="mobile-drawer-link"><span class="icon" data-icon="tv"></span> Séries</a>
+    <a href="busca.html?tipo=pessoa" class="mobile-drawer-link"><span class="icon" data-icon="user"></span> Elenco</a>
+    <a href="listas.html" class="mobile-drawer-link"><span class="icon" data-icon="list"></span> Listas</a>
+    <a href="analises.html" class="mobile-drawer-link"><span class="icon" data-icon="star"></span> Análises</a>
+    <a href="noticias.html" class="mobile-drawer-link"><span class="icon" data-icon="newspaper"></span> Notícias</a>
+    <a href="lancamentos.html" class="mobile-drawer-link"><span class="icon" data-icon="ticket"></span> Lançamentos</a>
+    <a href="rankings.html" class="mobile-drawer-link"><span class="icon" data-icon="trophy"></span> Rankings</a>
+    <a href="busca.html" class="mobile-drawer-link"><span class="icon" data-icon="search"></span> Buscar</a>
+  </div>
+</div>
+
+<main id="main">
+  <div class="container page-header">
+    <h1>Lançamentos</h1>
+    <p>Os mais recentes primeiro.</p>
+  </div>
+  <div class="container section-tight">
+    <div class="card-grid" id="release-list"></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo"><span class="logo-mark">🍿</span> PipocaCentral</a>
+        <p>Filmes, séries e cultura pop num só lugar — catálogo, editorial e comunidade, feito no Brasil.</p>
+      </div>
+      <div class="footer-col"><h4>Explorar</h4><ul>
+        <li><a href="busca.html?tipo=filme">Filmes</a></li>
+        <li><a href="busca.html?tipo=serie">Séries</a></li>
+        <li><a href="busca.html?tipo=pessoa">Elenco</a></li>
+        <li><a href="rankings.html">Rankings</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Editorial</h4><ul>
+        <li><a href="noticias.html">Notícias</a></li>
+        <li><a href="analises.html">Análises</a></li>
+        <li><a href="listas.html">Listas</a></li>
+        <li><a href="lancamentos.html">Lançamentos</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>PipocaCentral</h4><ul>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="termos.html">Termos de Uso</a></li>
+        <li><a href="privacidade.html">Privacidade</a></li>
+        <li><a href="cookies.html">Cookies</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year></span> PipocaCentral. Todos os direitos reservados.</span>
+      <span>Feito no Brasil, para quem ama cinema.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/mock-data.js"></script>
+<script src="js/main.js" defer></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const sorted = [...MOVIES].sort((a, b) => b.year - a.year);
+    document.getElementById("release-list").innerHTML = sorted.map((m) => `
+      <a class="card-poster" href="filme.html">
+        <div class="card-poster-art" style="--poster-a:${m.color[0]};--poster-b:${m.color[1]}">
+          <div class="card-poster-initial">${m.title[0]}</div>
+          <div class="card-poster-overlay"><span class="rating"><span class="icon" data-icon="star"></span>${m.ratingAvg}</span></div>
+        </div>
+        <h3>${m.title}</h3><div class="meta">${m.year} · ${m.genres[0]}</div>
+      </a>`).join("");
+    hydrateIcons();
+  });
+</script>
+</body>
+</html>

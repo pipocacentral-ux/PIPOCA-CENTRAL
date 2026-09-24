@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de Cookies | PipocaCentral</title>
+<meta name="description" content="Quais cookies o PipocaCentral usa e como gerenciar suas preferências.">
+<link rel="canonical" href="https://[SEU-DOMINIO]/cookies">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><span class="logo-mark">🍿</span> PipocaCentral</a>
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="index.html" class="nav-link">Início</a>
+      <a href="busca.html?tipo=filme" class="nav-link">Filmes</a>
+      <a href="busca.html?tipo=serie" class="nav-link">Séries</a>
+      <a href="busca.html?tipo=pessoa" class="nav-link">Elenco</a>
+      <a href="listas.html" class="nav-link">Listas</a>
+      <a href="analises.html" class="nav-link">Análises</a>
+      <a href="noticias.html" class="nav-link">Notícias</a>
+      <a href="lancamentos.html" class="nav-link">Lançamentos</a>
+      <a href="rankings.html" class="nav-link">Rankings</a>
+    </nav>
+    <div class="header-actions">
+      <a href="busca.html" class="icon-btn" aria-label="Buscar"><span class="icon" data-icon="search"></span></a>
+      <button class="btn btn-secondary btn-sm" data-requires-auth>Entrar</button>
+      <button class="icon-btn nav-toggle" aria-label="Abrir menu"><span class="icon" data-icon="menu"></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-drawer">
+  <div class="mobile-drawer-scrim"></div>
+  <div class="mobile-drawer-panel">
+    <div class="mobile-drawer-header">
+      <span class="logo"><span class="logo-mark">🍿</span> PipocaCentral</span>
+      <button class="icon-btn drawer-close" aria-label="Fechar menu"><span class="icon" data-icon="close"></span></button>
+    </div>
+    <a href="index.html" class="mobile-drawer-link"><span class="icon" data-icon="home"></span> Início</a>
+    <a href="busca.html?tipo=filme" class="mobile-drawer-link"><span class="icon" data-icon="film"></span> Filmes</a>
+    <a href="busca.html?tipo=serie" class="mobile-drawer-link"><span class="icon" data-icon="tv"></span> Séries</a>
+    <a href="busca.html?tipo=pessoa" class="mobile-drawer-link"><span class="icon" data-icon="user"></span> Elenco</a>
+    <a href="listas.html" class="mobile-drawer-link"><span class="icon" data-icon="list"></span> Listas</a>
+    <a href="analises.html" class="mobile-drawer-link"><span class="icon" data-icon="star"></span> Análises</a>
+    <a href="noticias.html" class="mobile-drawer-link"><span class="icon" data-icon="newspaper"></span> Notícias</a>
+    <a href="lancamentos.html" class="mobile-drawer-link"><span class="icon" data-icon="ticket"></span> Lançamentos</a>
+    <a href="rankings.html" class="mobile-drawer-link"><span class="icon" data-icon="trophy"></span> Rankings</a>
+    <a href="busca.html" class="mobile-drawer-link"><span class="icon" data-icon="search"></span> Buscar</a>
+  </div>
+</div>
+
+<main id="main">
+  <div class="container-narrow section prose">
+    <h1 style="margin-bottom:var(--space-4)">Política de Cookies</h1>
+    <p>Cookies são pequenos arquivos que o site guarda no seu navegador. Usamos algumas categorias diferentes, e você decide quais aceitar — exceto os essenciais, que o site precisa pra funcionar.</p>
+
+    <h2>Categorias</h2>
+    <ul>
+      <li><strong>Essenciais</strong> — login, segurança e navegação básica. Sempre ativos.</li>
+      <li><strong>Desempenho e analytics</strong> — nos ajudam a entender quais páginas funcionam bem (Google Analytics).</li>
+      <li><strong>Publicidade</strong> — usados pelo Google AdSense para exibir anúncios mais relevantes.</li>
+      <li><strong>Funcionalidades</strong> — lembram preferências como avatar escolhido e tema.</li>
+    </ul>
+
+    <h2>Gerenciar suas preferências</h2>
+    <p>Você pode mudar sua escolha a qualquer momento aqui embaixo — a mudança é salva neste navegador imediatamente.</p>
+
+    <div class="panel" style="margin-top:var(--space-5)">
+      <div class="cookie-categories">
+        <label class="cookie-cat">
+          <span><span class="name">Essenciais</span><span class="desc">Sempre ativos.</span></span>
+          <span class="switch"><input type="checkbox" checked disabled><span class="track"><span class="thumb"></span></span></span>
+        </label>
+        <label class="cookie-cat">
+          <span><span class="name">Desempenho e analytics</span><span class="desc">Métricas de uso do site.</span></span>
+          <span class="switch"><input type="checkbox" id="pref-analytics" data-cat="analytics"><span class="track"><span class="thumb"></span></span></span>
+        </label>
+        <label class="cookie-cat">
+          <span><span class="name">Publicidade</span><span class="desc">Google AdSense.</span></span>
+          <span class="switch"><input type="checkbox" id="pref-ads" data-cat="ads"><span class="track"><span class="thumb"></span></span></span>
+        </label>
+        <label class="cookie-cat">
+          <span><span class="name">Funcionalidades</span><span class="desc">Preferências como avatar e tema.</span></span>
+          <span class="switch"><input type="checkbox" id="pref-functional" data-cat="functional"><span class="track"><span class="thumb"></span></span></span>
+        </label>
+      </div>
+      <button class="btn btn-primary btn-block" id="save-prefs" style="margin-top:var(--space-5)">Salvar preferências</button>
+    </div>
+
+    <h2 style="margin-top:var(--space-8)">Mais informações</h2>
+    <p>Para saber como tratamos seus dados de forma geral, veja a <a href="privacidade.html" style="color:var(--color-brand)">Política de Privacidade</a>.</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo"><span class="logo-mark">🍿</span> PipocaCentral</a>
+        <p>Filmes, séries e cultura pop num só lugar — catálogo, editorial e comunidade, feito no Brasil.</p>
+      </div>
+      <div class="footer-col"><h4>Explorar</h4><ul>
+        <li><a href="busca.html?tipo=filme">Filmes</a></li>
+        <li><a href="busca.html?tipo=serie">Séries</a></li>
+        <li><a href="busca.html?tipo=pessoa">Elenco</a></li>
+        <li><a href="rankings.html">Rankings</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Editorial</h4><ul>
+        <li><a href="noticias.html">Notícias</a></li>
+        <li><a href="analises.html">Análises</a></li>
+        <li><a href="listas.html">Listas</a></li>
+        <li><a href="lancamentos.html">Lançamentos</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>PipocaCentral</h4><ul>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="termos.html">Termos de Uso</a></li>
+        <li><a href="privacidade.html">Privacidade</a></li>
+        <li><a href="cookies.html">Cookies</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year></span> PipocaCentral. Todos os direitos reservados.</span>
+      <span>Feito no Brasil, para quem ama cinema.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/mock-data.js"></script>
+<script src="js/main.js" defer></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const prefs = getCookiePrefs() || {};
+    document.querySelectorAll("#pref-analytics, #pref-ads, #pref-functional").forEach((el) => {
+      el.checked = !!prefs[el.dataset.cat];
+    });
+    document.getElementById("save-prefs").addEventListener("click", () => {
+      const newPrefs = {};
+      document.querySelectorAll("[data-cat]").forEach((el) => (newPrefs[el.dataset.cat] = el.checked));
+      saveCookiePrefs(newPrefs);
+      showToast("Preferências de cookies atualizadas.");
+    });
+  });
+</script>
+</body>
+</html>

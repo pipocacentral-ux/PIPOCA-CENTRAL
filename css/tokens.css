@@ -1,0 +1,71 @@
+/* ==========================================================================
+   PipocaCentral — Design Tokens
+   Fonte única da verdade para cor, tipografia e espaçamento (Seção 5).
+   Nunca usar valores hard-coded fora deste arquivo — sempre var(--token).
+   ========================================================================== */
+
+:root {
+  /* Cores — Seção 5 */
+  --bg-primary: #0B0D12;
+  --bg-secondary: #141821;
+  --bg-card: #1B202B;
+  --bg-card-hover: #212736;
+  --text-primary: #F5F5F5;
+  --text-secondary: #A7ADB8;
+  --color-brand: #FFC857;
+  --color-brand-hover: #FFD978;
+  --color-error: #E5484D;
+  --color-success: #3CCB7F;
+
+  /* Texto sobre fundo amarelo precisa ser escuro pra manter contraste AA */
+  --text-on-brand: #171200;
+
+  --border-subtle: rgba(167, 173, 184, 0.14);
+  --border-strong: rgba(167, 173, 184, 0.28);
+  --overlay-scrim: rgba(11, 13, 18, 0.72);
+
+  /* Tipografia — uma família só, peso/tracking fazem o trabalho de hierarquia */
+  --font-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+
+  --fs-xs: 0.8125rem;
+  --fs-sm: 0.9375rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 1.75rem;
+  --fs-2xl: clamp(2rem, 1.6rem + 1.8vw, 2.75rem);
+  --fs-3xl: clamp(2.5rem, 1.9rem + 2.8vw, 3.75rem);
+
+  --lh-tight: 1.15;
+  --lh-snug: 1.35;
+  --lh-normal: 1.6;
+
+  /* Espaçamento — escala de 4px */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+  --space-9: 96px;
+
+  /* Radius com hierarquia — não é o mesmo valor em tudo */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 22px;
+  --radius-full: 999px;
+
+  --touch-min: 44px;
+
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-elevated: 0 20px 50px rgba(0, 0, 0, 0.5);
+
+  --container-max: 1240px;
+  --container-narrow: 760px;
+
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur-base: 260ms;
+}
