@@ -1,10 +1,3 @@
-/* ==========================================================================
-   PipocaCentral — main.js
-   Interações client-side. Em produção, favoritar/avaliar/comentar/buscar
-   passam a chamar Firestore (via SDK ou pelas serverless functions) —
-   por enquanto ficam como demonstração visual, sem persistir nada.
-   ========================================================================== */
-
 const ICONS = {
   search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
   heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>',
@@ -25,12 +18,16 @@ const ICONS = {
   list: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
   newspaper: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12v14a2 2 0 0 1-2 2H4z"/><path d="M16 8h4v10a2 2 0 0 1-2 2h-2"/><line x1="8" y1="9" x2="12" y2="9"/><line x1="8" y1="13" x2="12" y2="13"/></svg>',
   ticket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1a2 2 0 0 0 0 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1a2 2 0 0 0 0-4z"/></svg>',
+  google: '<svg viewBox="0 0 24 24"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.6 3.9-5.5 3.9a6.1 6.1 0 0 1 0-12.2c1.9 0 3.2.8 3.9 1.5l2.7-2.6A9.9 9.9 0 0 0 12 2a10 10 0 1 0 0 20c5.8 0 9.6-4 9.6-9.8 0-.7-.1-1.2-.2-1.7z"/></svg>',
+  logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>',
+  flag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"/><path d="M4 4h13l-2 4 2 4H4"/></svg>',
 };
 
 function hydrateIcons(root = document) {
   root.querySelectorAll("[data-icon]").forEach((el) => {
     const name = el.dataset.icon;
-    if (ICONS[name]) el.innerHTML = ICONS[name];
+    if (ICONS[name] && !el.firstElementChild) el.innerHTML = ICONS[name];
   });
 }
 
@@ -39,12 +36,14 @@ function showToast(message) {
   if (!toast) {
     toast = document.createElement("div");
     toast.className = "toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
     document.body.appendChild(toast);
   }
   toast.textContent = message;
   toast.classList.add("is-visible");
   clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove("is-visible"), 3200);
+  toast._timer = setTimeout(() => toast.classList.remove("is-visible"), 4200);
 }
 
 function setupMobileDrawer() {
@@ -60,21 +59,6 @@ function setupMobileDrawer() {
   scrim?.addEventListener("click", closeDrawer);
 }
 
-/* ---------- "Ações" que dependem de login (favoritar, assistir depois, avaliar) ---------- */
-function setupAuthGatedActions() {
-  document.querySelectorAll("[data-requires-auth]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      showToast("Crie sua conta para usar essa função — chega na próxima fase, junto com o cadastro de verdade.");
-    });
-  });
-  document.querySelectorAll(".stars.is-interactive .icon").forEach((star, idx, all) => {
-    star.addEventListener("click", () => {
-      showToast("Sua nota vai ficar salva assim que o cadastro estiver ativo. Por enquanto é só demonstração.");
-    });
-  });
-}
-
-/* ---------- Banner de consentimento de cookies (Seção 16.3) ---------- */
 const COOKIE_KEY = "pipoca_cookie_consent";
 
 function getCookiePrefs() {
@@ -88,11 +72,11 @@ function getCookiePrefs() {
 
 function saveCookiePrefs(prefs) {
   try { localStorage.setItem(COOKIE_KEY, JSON.stringify(prefs)); } catch {}
+  document.dispatchEvent(new CustomEvent("pipoca:consent", { detail: prefs }));
 }
 
 function renderCookieBanner() {
-  if (document.querySelector(".cookie-banner")) return;
-  const existing = getCookiePrefs();
+  if (document.querySelector(".cookie-banner") || getCookiePrefs()) return;
 
   const el = document.createElement("div");
   el.className = "cookie-banner";
@@ -100,7 +84,7 @@ function renderCookieBanner() {
   el.setAttribute("aria-label", "Preferências de cookies");
   el.innerHTML = `
     <h2>A gente usa cookies</h2>
-    <p>Usamos cookies essenciais para o site funcionar e, com sua permissão, também para métricas e anúncios. Você pode escolher o que aceitar e mudar de ideia quando quiser em <a href="cookies.html" style="color:var(--color-brand)">Política de Cookies</a>.</p>
+    <p>Usamos cookies essenciais para o site funcionar e, com sua permissão, também para métricas e anúncios. Você pode escolher o que aceitar e mudar de ideia quando quiser em <a href="/cookies" style="color:var(--color-brand)">Política de Cookies</a>.</p>
     <div class="cookie-categories">
       <label class="cookie-cat">
         <span><span class="name">Essenciais</span><span class="desc">Necessários para login e navegação — não dá para desligar.</span></span>
@@ -132,7 +116,6 @@ function renderCookieBanner() {
   const closeBanner = () => el.classList.remove("is-visible");
 
   el.querySelector('[data-action="accept-all"]').addEventListener("click", () => {
-    el.querySelectorAll("input[data-cat]").forEach((i) => (i.checked = true));
     saveCookiePrefs({ analytics: true, ads: true, functional: true });
     closeBanner();
     showToast("Preferências salvas.");
@@ -149,115 +132,33 @@ function renderCookieBanner() {
     closeBanner();
     showToast("Só os cookies essenciais foram mantidos.");
   });
-
-  if (existing) el.remove();
 }
 
-/* ---------- Busca client-side (demonstração — em produção é Firestore) ---------- */
-function runSearchDemo() {
-  const resultsEl = document.getElementById("search-results");
-  const emptyEl = document.getElementById("search-empty");
-  const skeletonEl = document.getElementById("search-skeleton");
-  const input = document.getElementById("search-input");
-  const tabs = document.querySelectorAll(".filter-tab[data-type]");
-  if (!resultsEl || !input) return;
-
-  let activeType = new URLSearchParams(location.search).get("tipo") || "todos";
-
-  function cardMovie(m) {
-    return `<a class="card-poster" href="filme.html">
-      <div class="card-poster-art" style="--poster-a:${m.color[0]};--poster-b:${m.color[1]}">
-        <div class="card-poster-initial">${m.title[0]}</div>
-        <div class="card-poster-overlay"><span class="rating"><span class="icon" data-icon="star"></span>${m.ratingAvg}</span></div>
-      </div>
-      <h3>${m.title}</h3><div class="meta">${m.year} · Filme</div>
-    </a>`;
-  }
-  function cardSeries(s) {
-    return `<a class="card-poster" href="serie.html">
-      <div class="card-poster-art" style="--poster-a:${s.color[0]};--poster-b:${s.color[1]}">
-        <div class="card-poster-initial">${s.title[0]}</div>
-        <div class="card-poster-overlay"><span class="rating"><span class="icon" data-icon="star"></span>${s.ratingAvg}</span></div>
-      </div>
-      <h3>${s.title}</h3><div class="meta">${s.years} · Série</div>
-    </a>`;
-  }
-  function cardPerson(p) {
-    return `<a class="card-person" href="ator.html">
-      <div class="card-person-photo" style="--poster-a:${p.color[0]};--poster-b:${p.color[1]}">${p.name[0]}</div>
-      <h3>${p.name}</h3><div class="meta">${p.role}</div>
-    </a>`;
-  }
-
-  function render() {
-    const q = input.value.trim().toLowerCase();
-    if (skeletonEl) skeletonEl.style.display = "grid";
-    resultsEl.style.display = "none";
-    if (emptyEl) emptyEl.style.display = "none";
-
-    setTimeout(() => {
-      const movies = activeType === "todos" || activeType === "filme" ? MOVIES.filter((m) => m.title.toLowerCase().includes(q)) : [];
-      const series = activeType === "todos" || activeType === "serie" ? SERIES.filter((s) => s.title.toLowerCase().includes(q)) : [];
-      const people = activeType === "todos" || activeType === "pessoa" ? PEOPLE.filter((p) => p.name.toLowerCase().includes(q)) : [];
-
-      const total = movies.length + series.length + people.length;
-      if (skeletonEl) skeletonEl.style.display = "none";
-
-      if (total === 0) {
-        if (emptyEl) emptyEl.style.display = "block";
-        resultsEl.style.display = "none";
-        return;
-      }
-
-      resultsEl.style.display = "grid";
-      resultsEl.innerHTML = [...movies.map(cardMovie), ...series.map(cardSeries), ...people.map(cardPerson)].join("");
-      hydrateIcons(resultsEl);
-    }, 350);
-  }
-
-  tabs.forEach((tab) => {
-    if (tab.dataset.type === activeType) tab.classList.add("is-active");
-    tab.addEventListener("click", () => {
-      tabs.forEach((t) => t.classList.remove("is-active"));
-      tab.classList.add("is-active");
-      activeType = tab.dataset.type;
-      render();
-    });
-  });
-
-  input.addEventListener("input", render);
-  render();
-
-  const filtersToggle = document.querySelector(".filters-toggle");
-  const filtersPanel = document.querySelector(".filters-panel");
-  filtersToggle?.addEventListener("click", () => {
-    filtersPanel.classList.toggle("is-open");
-    filtersToggle.setAttribute("aria-expanded", filtersPanel.classList.contains("is-open"));
-  });
-}
-
-function setupContactForm() {
-  const form = document.getElementById("contact-form");
-  if (!form) return;
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    showToast("Formulário pronto, mas ainda não conectado — o envio real entra junto com o backend.");
-    form.reset();
+function highlightNav() {
+  const path = location.pathname.replace(/\/+$/, "") || "/";
+  const tipo = new URLSearchParams(location.search).get("tipo");
+  const sections = { "/filmes": "filme", "/series": "serie", "/elenco": "pessoa" };
+  const root = "/" + path.split("/")[1];
+  document.querySelectorAll(".nav-link, .mobile-drawer-link").forEach((link) => {
+    const url = new URL(link.getAttribute("href"), location.origin);
+    const linkPath = url.pathname.replace(/\/+$/, "") || "/";
+    const linkTipo = url.searchParams.get("tipo");
+    let active = false;
+    if (linkTipo) {
+      active = (linkPath === path && linkTipo === tipo) || sections[root] === linkTipo;
+    } else if (linkPath === "/busca") {
+      active = path === "/busca" && !tipo;
+    } else {
+      active = linkPath === path || (linkPath !== "/" && root === linkPath);
+    }
+    link.classList.toggle("is-active", active);
   });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   hydrateIcons();
   setupMobileDrawer();
-  setupAuthGatedActions();
   renderCookieBanner();
-  runSearchDemo();
-  setupContactForm();
-
+  highlightNav();
   document.querySelectorAll("[data-year]").forEach((el) => (el.textContent = new Date().getFullYear()));
-
-  const path = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".nav-link, .mobile-drawer-link").forEach((link) => {
-    if (link.getAttribute("href") === path) link.classList.add("is-active");
-  });
 });

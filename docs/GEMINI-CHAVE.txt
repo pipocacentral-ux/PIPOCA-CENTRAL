@@ -1,0 +1,54 @@
+GEMINI — COMO COLOCAR A SUA CHAVE (a parte de código já está pronta)
+====================================================================
+
+O assistente de IA do painel (menu "Assistente de IA" e o botão "Gerar com IA"
+nos formulários) já está programado. Ele funciona assim: o painel chama o Worker
+API, o Worker confere se quem pediu é administrador, e só ele fala com o Gemini.
+A chave NUNCA fica no site, no painel nem no GitHub: fica só no Worker.
+
+Enquanto a chave não estiver colocada, o painel mostra a mensagem:
+  "A chave do Gemini ainda não foi configurada no Worker (variável GEMINI_API_KEY)."
+Isso é normal e não quebra mais nada.
+
+PASSO A PASSO
+-------------
+1. Cloudflare > Workers & Pages > abra o Worker "pipoca-api" (o do arquivo
+   workers/api/index.js).
+2. Settings > Variables and secrets > Add.
+3. Type: Secret
+   Variable name: GEMINI_API_KEY      (exatamente assim, em maiúsculas)
+   Value: cole a chave criada no Google AI Studio
+4. Clique em Deploy (ou Save and deploy).
+5. Abra o painel > Assistente de IA, escreva um pedido e clique em "Gerar texto".
+
+OPCIONAL
+--------
+- Modelo: por padrão o código usa "gemini-flash-latest" (sempre aponta para o
+  Flash mais novo do Google). Para fixar outro, crie a variável de tipo Text
+  GEMINI_MODEL com o nome do modelo mostrado no Google AI Studio.
+- Limite de uso: 20 pedidos por hora e 120 por dia por administrador; cada
+  resposta tem no máximo 2048 tokens e o pedido é cortado em 6000 caracteres.
+  Para mudar, edite GEMINI_LIMITS no topo de workers/api/index.js e publique de novo.
+
+SEGURANÇA DA CHAVE
+------------------
+- No Google AI Studio / Google Cloud, em "restrições da chave", se possível
+  limite a chave à API "Generative Language API".
+- Se a chave aparecer por engano em chat, print ou repositório, gere outra no AI
+  Studio e troque o valor do Secret no Cloudflare.
+
+SE DER ERRO
+-----------
+  "Gemini: API key not valid"        -> chave copiada errada ou com espaço sobrando.
+  "Gemini: models/... not found"     -> nome do modelo mudou: defina GEMINI_MODEL.
+  "Limite do assistente atingido"    -> espere a próxima hora ou aumente o limite.
+  "Sem permissão de administrador"   -> entre no painel de novo (sessão antiga).
+  "O Gemini bloqueou esse pedido"    -> reformule o pedido.
+  Erro de rede / CORS                -> ALLOWED_ORIGINS do Worker API precisa conter
+                                         o endereço exato do painel.
+
+DICA DE USO
+-----------
+O assistente não pesquisa na internet. Ele escreve com base no que você mandar.
+Confira nomes, datas e números antes de publicar; trechos marcados com
+[VERIFICAR] são os que ele não tinha certeza.

@@ -1,0 +1,218 @@
+PIPOCACENTRAL — PASSO A PASSO PARA COLOCAR O BACKEND NO AR
+===========================================================
+
+Como o projeto está organizado
+------------------------------
+  raiz do repositório   -> site público (projeto "site" na Vercel)
+  painel/               -> painel administrativo (projeto "painel" na Vercel)
+  workers/tmdb/         -> código do Worker do TMDB (o que já existe na Cloudflare)
+  workers/api/          -> código do Worker novo: planilha, e-mail (Resend) e Gemini
+  firestore.rules       -> regras de segurança do banco
+  firestore.indexes.json-> índices do banco
+  docs/                 -> estes textos
+
+Ordem recomendada (siga de cima para baixo):
+  1. GitHub e Vercel
+  2. Firebase
+  3. Cloudflare (os dois Workers)
+  4. Variáveis de ambiente na Vercel
+  5. Colar a URL do Worker API no painel
+  6. Primeiro login e conferência
+  7. Colocar conteúdo no ar
+
+
+1) GITHUB E VERCEL
+------------------
+- Suba o conteúdo do zip no repositório (substitui o que está lá).
+- Projeto "site" na Vercel: Root Directory = (vazio / raiz). Framework: Other.
+- Projeto "painel" na Vercel: aponte para o MESMO repositório e em
+  Settings > General > Root Directory escolha:  painel
+- O site tem um redirecionamento que manda /painel/... de volta para a home,
+  então a pasta painel não aparece publicamente dentro do site.
+- Depois de criar as variáveis do passo 4, faça Redeploy nos dois projetos.
+
+
+2) FIREBASE (projeto pipoca-central)
+------------------------------------
+2.1 Authentication
+  - Sign-in method: Google e E-mail/senha (você já ativou).
+  - Settings > Authorized domains: adicione o endereço .vercel.app do SITE e o do
+    PAINEL (ex.: pipocacentral.vercel.app e painel-pipoca.vercel.app).
+    Sem isso o login com Google dá o erro "domínio não autorizado".
+  - Templates (opcional): em Templates você pode traduzir os e-mails de
+    confirmação e de redefinição de senha para português.
+
+2.2 Firestore
+  - Confira a região (Configurações do projeto ou na tela do Firestore). O ideal
+    é southamerica-east1 (São Paulo). A região NÃO muda depois de criada; se
+    escolheu outra e o banco ainda está vazio, vale apagar e criar de novo.
+  - Regras: abra Firestore > Regras, apague tudo, cole o conteúdo do arquivo
+    firestore.rules e clique em Publicar.
+  - Índices: o site faz buscas ordenadas que precisam de índices. Duas formas:
+      a) Pelo terminal (recomendado), dentro da pasta do projeto:
+           npm install -g firebase-tools
+           firebase login
+           firebase use pipoca-central
+           firebase deploy --only firestore
+         Isso publica regras E índices de uma vez.
+      b) Sem terminal: abra o site, use as páginas; quando faltar um índice, o
+         console do navegador (F12) mostra um link do Firebase que cria o índice
+         com um clique. Repita até parar de aparecer erro.
+    Os índices demoram alguns minutos para ficarem prontos.
+  - Limpeza automática (opcional): Firestore > TTL > criar política na coleção
+    rateLimits, campo expireAt. (O deploy do passo "a" tenta criar essa política sozinho;
+    se não criar, faça pelo console.)
+
+2.3 Chave de serviço (Admin SDK)
+  - Configurações do projeto > Contas de serviço > Gerar nova chave privada.
+  - Abra o JSON baixado e copie TODO o conteúdo. Ele vai na variável
+    FIREBASE_SERVICE_ACCOUNT da Vercel (passo 4). Nunca coloque esse arquivo no
+    GitHub nem mande no chat. O .gitignore já bloqueia arquivos com esse nome.
+
+
+3) CLOUDFLARE
+-------------
+3.1 Worker do TMDB (o que já existe: tmbdnewchame.canalpedroid.workers.dev)
+  - Workers & Pages > abra o Worker > Edit code > apague tudo e cole o conteúdo
+    de  workers/tmdb/index.js  > Deploy.
+  - Settings > Variables and secrets > Add:
+      TMDB_API_KEY     (tipo Secret)  -> a MESMA chave que estava no código antigo
+      ALLOWED_ORIGINS  (tipo Text)    -> https://ENDERECO-DO-PAINEL.vercel.app
+                                         (vários endereços: separe por vírgula,
+                                         sem espaço dentro do endereço e sem "/" no fim)
+  - Pronto: a chave deixa de estar escrita no código e o Worker só responde para
+    as origens da lista e só para as rotas do TMDB que o painel usa.
+  - A chave pode ser a v3 (32 caracteres) ou o "token de leitura" v4 (começa com eyJ).
+
+3.2 Worker novo: planilha + e-mail + Gemini
+  - Workers & Pages > Create > Create Worker > nome sugerido: pipoca-api > Deploy.
+  - Edit code > apague tudo > cole  workers/api/index.js  > Deploy.
+  - Settings > Variables and secrets > Add:
+      FIREBASE_PROJECT_ID  (Text)    pipoca-central
+      ALLOWED_ORIGINS      (Text)    https://ENDERECO-DO-PAINEL.vercel.app
+      RESEND_API_KEY       (Secret)  a chave que começa com re_
+      MAIL_SHARED_SECRET   (Secret)  invente uma senha longa (40+ caracteres
+                                     aleatórios). Guarde: vai igual na Vercel.
+      MAIL_FROM            (Text, opcional)  PipocaCentral <naoresponda@seudominio.com.br>
+                                     Sem isso usa onboarding@resend.dev (ver aviso abaixo).
+      OWNER_EMAIL          (Text, opcional)  padrão: pipocacentral@gmail.com
+      GEMINI_API_KEY       (Secret)  veja o arquivo GEMINI-CHAVE.txt
+      GEMINI_MODEL         (Text, opcional)  padrão: gemini-flash-latest
+      SHEETS_ID            (Text, opcional)  padrão: o ID da sua planilha atual
+  - Anote a URL do Worker (ex.: https://pipoca-api.canalpedroid.workers.dev).
+
+  AVISO SOBRE O RESEND: enquanto você não verificar um domínio no Resend, ele só
+  entrega e-mails para o endereço da própria conta do Resend. Ou seja:
+    * o aviso de "nova mensagem de contato" chega se a conta do Resend foi criada
+      com pipocacentral@gmail.com;
+    * a confirmação enviada ao visitante, as respostas do painel e os convites de
+      administrador só funcionam depois que o domínio estiver verificado.
+  Nada quebra por isso: a mensagem de contato sempre fica salva no painel
+  (Mensagens de contato), e o painel mostra o motivo se um e-mail não sair.
+
+  Limites do Gemini que eu defini: 20 pedidos por hora e 120 por dia para cada
+  administrador (para mudar, edite GEMINI_LIMITS no topo de workers/api/index.js).
+
+
+4) VARIÁVEIS DE AMBIENTE NA VERCEL
+----------------------------------
+Projeto SITE  (Settings > Environment Variables):
+  FIREBASE_SERVICE_ACCOUNT   o JSON inteiro da chave de serviço (passo 2.3)
+  MAIL_WORKER_URL            URL do Worker API (passo 3.2), sem "/" no fim
+  MAIL_SHARED_SECRET         o mesmo valor colocado no Worker API
+  SITE_URL                   (opcional) endereço oficial, ex.: https://seudominio.com.br
+  RATE_LIMIT_SALT            (opcional) qualquer texto aleatório
+
+Projeto PAINEL:
+  FIREBASE_SERVICE_ACCOUNT   o mesmo JSON
+  MAIL_WORKER_URL            URL do Worker API
+  MAIL_SHARED_SECRET         o mesmo valor do Worker API
+  PANEL_URL                  endereço do painel, ex.: https://painel-pipoca.vercel.app
+  SUPER_ADMIN_EMAIL          (opcional) padrão: canalpedroid@gmail.com
+
+Depois de salvar tudo: Deployments > ... > Redeploy nos dois projetos.
+
+
+5) URL DO WORKER NO PAINEL
+--------------------------
+Abra  painel/js/config.js  e troque:
+  apiWorkerUrl: "COLE_AQUI_A_URL_DO_WORKER_API"
+pela URL do Worker API. A URL do Worker do TMDB já está preenchida.
+(Quando tiver domínio, preencha também siteUrl para aparecer o botão "Ver no site".)
+Faça commit e push.
+
+
+6) PRIMEIRO LOGIN E CONFERÊNCIA
+-------------------------------
+- Abra o painel e entre com o Google usando canalpedroid@gmail.com. Esse e-mail
+  vira administrador geral automaticamente (o e-mail precisa estar verificado, o
+  que o Google já garante).
+- Na tela inicial clique em "Verificar agora": ele testa o Worker do TMDB, o
+  Worker API e a leitura da planilha, e mostra em vermelho o que falta.
+- Administradores: menu "Equipe e usuários". Só o administrador geral adiciona ou
+  remove. Se a pessoa ainda não tem conta, o convite fica pendente e vale quando
+  ela entrar no painel com aquele e-mail. Administradores comuns têm acesso a todo
+  o painel, menos a essa gestão.
+
+
+7) COLOCANDO CONTEÚDO NO AR
+---------------------------
+  a) Plataformas e Avatares: use "Importar da planilha" em cada tela.
+  b) Filmes e Séries: "Importar da planilha" (a tela mostra qual coluna alimenta
+     cada campo; colunas que você não escolher, como J e K, são ignoradas) ou
+     "Importar do TMDB" (busca pelo nome e traz elenco, pôster, trailer, onde
+     assistir e classificação). Tudo entra como RASCUNHO.
+  c) Revise e publique: marque os itens na lista e use "Publicar", ou edite um a um.
+  d) Elenco: ao importar um filme, marque "Criar também as fichas do elenco" para
+     gerar rascunhos; importe cada pessoa pelo TMDB para trazer biografia e publique.
+     Só quem está publicado vira link na página do filme.
+  e) Notícias, análises e listas: escritas no painel (o texto aceita markdown
+     simples). O botão "Gerar com IA" ajuda a começar um texto; sempre revise.
+
+
+RODAR LOCALMENTE (opcional)
+---------------------------
+  npm install
+  npm test                    (testes automáticos dos Workers, páginas e regras de negócio)
+  npx vercel dev              (site com as funções /api funcionando; precisa do .env)
+Abrir os .html direto pelo duplo clique não funciona mais, porque os links agora
+são absolutos (/busca, /css/...). Use sempre um servidor.
+
+
+QUANDO COMPRAR O DOMÍNIO (lista do que muda)
+--------------------------------------------
+  - Trocar [SEU-DOMINIO] nas páginas estáticas (canonical, og:url, JSON-LD).
+  - Vercel: adicionar o domínio ao projeto e definir SITE_URL.
+  - Firebase > Authentication > Authorized domains: adicionar o domínio.
+  - Cloudflare: incluir o domínio em ALLOWED_ORIGINS (TMDB e API, se o painel usar).
+  - Resend: verificar o domínio e definir MAIL_FROM.
+  - painel/js/config.js: siteUrl, e PANEL_URL na Vercel do painel.
+
+
+PENDÊNCIAS SUAS (não dependem do código)
+----------------------------------------
+  - Idade mínima: coloquei 13 anos como valor provisório em js/config.js (campo
+    minAge), que aparece na caixa de cadastro. Defina o número oficial, ajuste em
+    js/config.js e no texto de termos.html.
+  - Nome do controlador de dados (LGPD) e demais campos entre colchetes em
+    privacidade.html e termos.html continuam como estavam.
+  - A Política de Privacidade precisa citar quem processa dados por você (Google/
+    Firebase, Vercel, Cloudflare, Resend) e a existência de cadastro, comentários,
+    notas e do formulário de contato. Peça revisão a um advogado antes de divulgar.
+
+
+SE ALGO DER ERRADO
+------------------
+  "domínio não autorizado" no login          -> passo 2.1 (Authorized domains).
+  Página sem filmes / erro "requires an index" -> passo 2.2 (índices).
+  "Missing or insufficient permissions"       -> regras não publicadas (passo 2.2).
+  Painel: "Sem acesso"                        -> entre com canalpedroid@gmail.com
+                                                 pelo Google, ou peça convite.
+  Painel: Worker TMDB em vermelho             -> TMDB_API_KEY e ALLOWED_ORIGINS
+                                                 (o endereço tem que ser idêntico ao
+                                                 do painel, com https e sem "/" no fim).
+  Planilha em vermelho                        -> a planilha precisa estar como
+                                                 "qualquer pessoa com o link pode ver".
+  E-mail não sai (403 do Resend)              -> domínio ainda não verificado no Resend.
+  Página de filme dá erro 500                 -> FIREBASE_SERVICE_ACCOUNT ausente ou
+                                                 incompleto na Vercel do SITE.
