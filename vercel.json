@@ -1,4 +1,19 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/filmes/:slug", "destination": "/api/render?t=filme&s=:slug" },
+    { "source": "/series/:slug", "destination": "/api/render?t=serie&s=:slug" },
+    { "source": "/elenco/:slug", "destination": "/api/render?t=ator&s=:slug" },
+    { "source": "/noticias/:slug", "destination": "/api/render?t=noticia&s=:slug" },
+    { "source": "/analises/:slug", "destination": "/api/render?t=analise&s=:slug" },
+    { "source": "/listas/:slug", "destination": "/api/render?t=lista&s=:slug" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/robots.txt", "destination": "/api/sitemap?robots=1" }
+  ],
+  "redirects": [
+    { "source": "/painel/:path*", "destination": "/", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -6,7 +21,14 @@
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" }
+        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
       ]
     }
   ]
